@@ -469,7 +469,7 @@ int mith_report_results(ee_workload *workload, size_t total_time, e_u32 num_cont
 			char *name=item->shortname;
 			mith_log(name,"UID",item->uid);
 			mith_log(name,"fails",item->failed);
-			mith_log(name,"time(ticks)",item->time);
+			mith_log_u(name,"time(ticks)",item->time);
 			total_item_time+=item->time;
 			mith_log(name,"count",item->finished);
 			mith_log_tcdef(name,item->tcdef,item->time,item->finished);
@@ -481,7 +481,7 @@ int mith_report_results(ee_workload *workload, size_t total_time, e_u32 num_cont
 			mith_log_dbl(name,"items/sec",(double)item->finished/secs);
 	#endif
 		}
-		mith_log("Items","total(ticks)",total_item_time);
+		mith_log_u("Items","total(ticks)",total_item_time);
 	#if FLOAT_SUPPORT
 		/* To compute sync overhead, sum up item times from individual threads,
 			subtract that from total time available to all contexts */
