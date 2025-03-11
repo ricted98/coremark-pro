@@ -4,6 +4,8 @@ PORT_DIR=$(abspath .)
 AL_DIR=$(PORT_DIR)/al
 WL_DIR=$(PORT_DIR)/workloads
 
+XLEN ?= 64
+
 RISCV     ?= $(error missing RISCV)
 RVB_HOME  ?= $(error missing RVB_HOME)
 RVB_BUILD ?= $(RVB_HOME)/build
@@ -20,18 +22,15 @@ EXTRA_INCLUDES += -I$(RVB_HOME)/drivers/uart16750/include
 EXTRA_INCLUDES += -I$(RVB_HOME)/drivers/plic/include
 EXTRA_INCLUDES += -I$(RVB_HOME)/drivers/clint_cheshire/include
 
+CFLAGS += -DFAKE_FILEIO
 CFLAGS += -DHOST_EXAMPLE_CODE=1
 CFLAGS += -DUSE_CLOCK=1
 CFLAGS += -DUSE_SINGLE_CONTEXT=1
 CFLAGS += -DUSE_TH_PRINTF
 # CFLAGS += -DTHDEBUG
-CFLAGS += -DTH_VERIFY_OUTPUT=1
-
-include $(WL_DIR)/$(TARGET)/$(TARGET).mk
+# CFLAGS += -DTH_VERIFY_OUTPUT=1
 
 CFLAGS += -iquote -O2 -Wall
-
-include $(RVB_BUILD)/makefile.include
 
 ifeq ($(XLEN),64)
 	CFLAGS += -DEE_SIZEOF_LONG=8
@@ -42,3 +41,7 @@ else
 	CFLAGS += -DEE_SIZEOF_PTR=4
 	CFLAGS += -DEE_PTR_ALIGN=4
 endif
+
+include $(WL_DIR)/$(TARGET)/$(TARGET).mk
+
+include $(RVB_BUILD)/makefile.include
