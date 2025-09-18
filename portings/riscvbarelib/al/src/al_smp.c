@@ -117,22 +117,49 @@ int al_cond_destroy(al_cond_t *cond) {
 	arg - argument to pass to the start_routine
 */
 int al_thread_create(al_thread_t * thread, void *(*start_routine)(void *), void * arg) {
-	return thread_create(thread, start_routine, arg);
+	// Try to reserve a free CPU up front
+    cpu_t *target = mp_get_free_cpu();
+
+	if (target) {
+        // Pin to the chosen CPU so thread_create() doesn't pick a different one
+        thread->cpu_id = (void *)((uintptr_t)target->sid);
+
+        // Try the normal IPI path
+        int rc = thread_create(thread, start_routine, arg);
+        if (rc == 0) return 0;
+
+        // Fall through to inline if no luck
+    }
+
+	// No free CPU, run synchronously on caller
+    cpu_t *self = (cpu_t *)cpu_get_thread_pointer();
+    if (self) {
+        void *ret = start_routine(arg);
+
+        thread->id     = self->sid;
+        thread->cpu_id = (void *)((uintptr_t)self->sid);
+        thread->desc   = NULL;          // sentinel: inline-completed
+        thread->ret    = ret;
+        return 0;
+    }
+
+	return -1;
 }
 /* Function: al_thread_join
 	Wait for a thread to complete.
 */
 int al_thread_join(al_thread_t thread, void **thread_return) {
-	int ret = thread_join(&thread);
+    // Inline-completed: nothing to wait for
+    if (thread.desc == NULL) {
+        if (thread_return) *thread_return = thread.ret;
+        return 0;
+    }
 
-	if (ret == 0) {
-		if (thread_return) {
-			*thread_return = thread.ret;
-		}
-		return 0;
-	}
-
-	return ret;
+    int rc = thread_join(&thread);
+    if (rc == 0 && thread_return) {
+        *thread_return = thread.ret;
+    }
+    return rc;
 }
 #endif
 

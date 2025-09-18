@@ -15,6 +15,13 @@ Please refer to LICENSE.md for the specific license agreement that pertains to t
 
 #include <stdatomic.h>
 #include "th_types.h"
+
+#ifdef AL_THREAD_RISCVBARELIB
+#include "common/spin_mutex.h"
+#include "common/threads.h"
+#include "common/cpu.h"
+#endif
+
 /* File: al_smp.h
  Abstractions of thread functions
  EEMBC AL defines 3 types: thread, mutex and condition,
