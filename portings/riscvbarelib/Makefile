@@ -42,6 +42,8 @@ else
 	CFLAGS += -DEE_PTR_ALIGN=4
 endif
 
+include $(PORT_DIR)/xcmd.mk
+
 include $(WL_DIR)/$(TARGET)/$(TARGET).mk
 
 include $(RVB_BUILD)/makefile.include

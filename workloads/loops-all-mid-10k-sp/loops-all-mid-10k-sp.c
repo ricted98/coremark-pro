@@ -43,6 +43,11 @@ extern int bmark_clean_loops(void *);
 /* main function to create the workload, run it, and report results */
 int main(int argc, char *argv[])
 {
+    #ifdef ARGS_OVERRIDE
+        static char *override_argv[] = ARGV_OVERRIDE;
+        argc = ARGC_OVERRIDE;
+        argv = override_argv;
+    #endif
 	char name[MITH_MAX_NAME];
 	char dataname_buf[MITH_MAX_NAME];
 	char *dataname;
