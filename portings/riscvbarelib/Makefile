@@ -25,10 +25,8 @@ EXTRA_INCLUDES += -I$(RVB_HOME)/drivers/clint_cheshire/include
 CFLAGS += -DFAKE_FILEIO
 CFLAGS += -DHOST_EXAMPLE_CODE=1
 CFLAGS += -DUSE_CLOCK=1
-CFLAGS += -DUSE_SINGLE_CONTEXT=1
 CFLAGS += -DUSE_TH_PRINTF
-# CFLAGS += -DTHDEBUG
-# CFLAGS += -DTH_VERIFY_OUTPUT=1
+# CFLAGS += -DTHDEBUG=5
 
 CFLAGS += -iquote -O2 -Wall
 
@@ -47,3 +45,9 @@ include $(PORT_DIR)/xcmd.mk
 include $(WL_DIR)/$(TARGET)/$(TARGET).mk
 
 include $(RVB_BUILD)/makefile.include
+
+ifeq ($(BSP_NCPUS), 1)
+	CFLAGS += -DUSE_SINGLE_CONTEXT=1
+else
+	CFLAGS += -DAL_THREAD_RISCVBARELIB=1
+endif
