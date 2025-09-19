@@ -5,9 +5,9 @@ OBJS += $(patsubst %.c,%.o,$(wildcard $(COREMARK_HOME)/benchmarks/consumer_v2/cj
 EXTRA_INCLUDES += -I$(COREMARK_HOME)/benchmarks/consumer_v2/cjpeg/data
 
 ifeq ($(XLEN),64)
-	CFLAGS += -DUSE_FP64
+	CFLAGS += -DUSE_FP64=1
 else
-	CFLAGS += -DUSE_FP32
+	CFLAGS += -DUSE_FP32=1
 endif
 
 CFLAGS += -DSELECT_PRESET_ID=1
