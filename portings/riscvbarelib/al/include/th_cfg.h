@@ -492,7 +492,7 @@ Please refer to LICENSE.md for the specific license agreement that pertains to t
 
 /** Set this 1 if your compiler has sys/stat.h */
 #if !defined(HAVE_SYS_STAT_H)
-#define	HAVE_SYS_STAT_H	1
+#define	HAVE_SYS_STAT_H	0
 #endif
 /** Set this 1 if declarations of STDERR/STDIN/STDOUT are required */
 #if !defined(NEED_STD_FILES)
