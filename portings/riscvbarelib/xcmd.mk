@@ -1,12 +1,14 @@
+# add support for argc/argv override using cli-like options
+# e.g. make XCMD='-v1 -c4'
 # --- config ---
-XCMD         ?=          # e.g. make XCMD='-v1 -c4'
+XCMD         ?=
 
 # --- helpers ---
 empty   :=
 space   := $(empty) $(empty)
 comma   := ,
 
-ifneq ($(strip $(XCMD)),)         # <-- only if XCMD not empty
+ifneq ($(strip $(XCMD)),)
   OV_LIST := $(TARGET) $(XCMD)
   OV_ARGC := $(words $(OV_LIST))
   OV_ARGV := {$(subst $(space),$(comma),$(foreach a,$(OV_LIST),"$(a)")) , NULL}
